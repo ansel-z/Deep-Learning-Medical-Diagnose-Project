@@ -18,7 +18,7 @@ def get_keywords(description):
     # print(list(keyword_dict.items()))
     # print(length)
     top_keywords = sorted(list(keyword_dict.items()),key=lambda x:x[1],reverse=True)[:int(length * 0.4)]
-    keywords_to_display = [keyword[0] for keyword in top10_keywords]
+    keywords_to_display = [keyword[0] for keyword in top_keywords]
     return keywords_to_display
 
 def get_keyword_spacy(description):
