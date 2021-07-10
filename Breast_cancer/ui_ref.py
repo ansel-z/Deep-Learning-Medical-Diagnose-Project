@@ -7,6 +7,11 @@ import numpy as np
 import cv2
 
 
+model_list = []
+option_list = ["Breast Cancer", "Skin Cancer"]
+
+
+
 # GUI:
 app = QApplication([])
 result_area = QPlainTextEdit()
@@ -17,8 +22,11 @@ uploadbutton = QPushButton("upload file")
 message = QLineEdit()
 label = QLabel()
 combox = QComboBox()
-combox.addItem("Breast Cancer")
-combox.addItem("Another Cancer")
+
+# set up models and options
+combox.addItems(option_list)
+#load model here and store results in model_list
+
 
 chatlayout = QVBoxLayout()
 chatlayout.addWidget(text_area)
@@ -41,7 +49,6 @@ hbox.addLayout(uploadlayout)
 hbox.addLayout(resultlayout)
 
 window = QWidget()
-window.setWindowTitle("Cancer Detector")
 window.setGeometry(500,500,1000,600)
 window.setLayout(hbox)
 window.show()
@@ -56,18 +63,16 @@ def messageHandler(msg):
     return msg+"\n"+"Hi, what can I do for you?"
 
 
-def imageHandler(img, cur_idx):
-    # models
-    model_list = []
-    model_list.append(tf.keras.models.load_model("Breast_cancer_model"))
-    cancer_type = ["breast cancer", "skin cancer"]
-    model = model_list[cur_idx]
+def imageHandler(img, ):
+    model = LoadModel("Breast_cancer_model")
+    print("model loaded")
+    model.summary()
     pred = model(img)
     pred = np.array(pred)
     pred_res = int(pred[0][0])
     res_str = ""
     if pred_res == 1:
-        res_str = "You have " + cancer_type[cur_idx] + "!"
+        res_str = "You have breast cancer!"
     else:
         res_str = "You are healthy!"
     result_area.appendPlainText(res_str)
@@ -83,23 +88,21 @@ def send_message():
 
 
 def uploadfilefunc():
-    cur_idx = combox.currentIndex()
     fdiag = QFileDialog()
     fdiag.setFileMode(QFileDialog.AnyFile)
     if fdiag.exec_():
         filenames = fdiag.selectedFiles()
         print("File opened: ", filenames[0])
         # show imag
-        img_show = QPixmap(filenames[0])
+        #img_show = QPixmap(filenames[0])
         # TODO: resize image
-        label.setPixmap(img_show)
-        label.setScaledContents(True)
+        #label.setPixmap(img_show)
         img = cv2.imread(filenames[0], 1)
         img = cv2.resize(img, (48, 48))
         img = np.array(img)
 #        img = np.transpose(img, (2, 0, 1))
         img = np.reshape(img, (1, 48, 48, 3))
-        imageHandler(img, cur_idx)
+        imageHandler(img)
         
     
 # Signals:
