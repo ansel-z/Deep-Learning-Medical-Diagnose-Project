@@ -20,7 +20,7 @@ label = QLabel()
 showlabel = QLabel()
 combox = QComboBox()
 combox.addItem("Breast Cancer")
-combox.addItem("Another Cancer")
+combox.addItem("Skin Cancer")
 
 chatlayout = QVBoxLayout()
 chatlayout.addWidget(text_area)
