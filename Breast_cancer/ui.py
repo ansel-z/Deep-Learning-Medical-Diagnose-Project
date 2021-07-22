@@ -72,6 +72,7 @@ def imageHandler(img, cur_idx):
     model_list.append(tf.keras.models.load_model("Breast_cancer_model"))
     model_list.append(tf.keras.models.load_model("skin_cancer.hdf5"))
     cancer_type = ["breast cancer", "skin cancer"]
+    acc = ["84", "80"]
     model = model_list[cur_idx]
     if cur_idx == 0:
         img = cv2.resize(img, (48, 48))
@@ -85,9 +86,10 @@ def imageHandler(img, cur_idx):
     pred_res = int(pred[0][0])
     res_str = ""
     if pred_res > 0.5:
-        res_str = "You have " + cancer_type[cur_idx] + "!"
+        res_str = "You may have " + cancer_type[cur_idx] + "!"
     else:
         res_str = "You are healthy!"
+    res_str += " \nOur prediction is of " + acc[cur_idx] + " percent accuracy."
     result_area.appendPlainText(res_str)
     
 
