@@ -22,31 +22,37 @@ combox = QComboBox()
 combox.addItem("Breast Cancer")
 combox.addItem("Skin Cancer")
 
-chatlayout = QVBoxLayout()
-chatlayout.addWidget(text_area)
-chatlayout.addWidget(message)
+# text labels
+label1 = QLabel("Diagnosis Result")
+label2 = QLabel("Uploaded Image")
+label3 = QLabel("Select Cancer Type")
 
-uploadlayout = QVBoxLayout()
-uploadlayout.addWidget(label)
-uploadlayout.addStretch(5)
-uploadlayout.addWidget(uploadbutton)
+
+# chatlayout = QVBoxLayout()
+# chatlayout.addWidget(text_area)
+# chatlayout.addWidget(message)
 
 
 resultlayout = QVBoxLayout()
+resultlayout.addWidget(label1)
 resultlayout.addWidget(result_area, 1)
+resultlayout.addWidget(label2)
 resultlayout.addWidget(showlabel, 2)
+resultlayout.addWidget(uploadbutton)
+resultlayout.addWidget(label3)
 resultlayout.addWidget(combox)
 
 
+
 hbox = QHBoxLayout()
-hbox.addLayout(chatlayout)
-hbox.addLayout(uploadlayout)
+# hbox.addLayout(chatlayout)
+# hbox.addLayout(uploadlayout)
 hbox.addLayout(resultlayout)
 
 
 window = QWidget()
 window.setWindowTitle("Cancer Detector")
-window.setGeometry(500,500,1000,600)
+window.setGeometry(500,500,400,600)
 window.setLayout(hbox)
 window.show()
 
@@ -75,13 +81,20 @@ def imageHandler(img, cur_idx):
     acc = ["84", "80"]
     model = model_list[cur_idx]
     if cur_idx == 0:
+        print(img.shape)
         img = cv2.resize(img, (48, 48))
+        print(img.shape)
         img = np.array(img)
-        img = np.reshape(img, (1, 48, 48, 3))
+        img = img.astype(np.float32)
+        #print(img)
+        img = np.array([img])
+        #img = np.reshape(img, (1, 48, 48, 3))
     else:
         img = img.astype(np.float32) / 255
+        print(img)
         img = np.array([img])
     pred = model(img)
+    print(pred)
     pred = np.array(pred)
     pred_res = int(pred[0][0])
     res_str = ""
@@ -114,12 +127,12 @@ def uploadfilefunc():
         # TODO: resize image
         showlabel.setPixmap(img_show)
         showlabel.setScaledContents(True)
-        img = cv2.imread(filenames[0], 1)
+        img = cv2.imread(filenames[0])
         imageHandler(img, cur_idx)
         
     
 # Signals:
-message.returnPressed.connect(send_message)
+# message.returnPressed.connect(send_message)
 uploadbutton.clicked.connect(uploadfilefunc)
 app.exec_()
 
